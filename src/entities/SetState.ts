@@ -1,0 +1,1 @@
+export declare type setState<T> = (value: (((prevState: T) => T) | T)) => void;
