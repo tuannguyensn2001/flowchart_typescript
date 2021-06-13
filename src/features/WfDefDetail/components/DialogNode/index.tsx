@@ -32,7 +32,7 @@ function DialogNode({isOpen, setIsOpen, currentNode}: DialogNodeProp) {
     const [form]: [form: FormInstance] = Form.useForm();
     const {trans} = useLocale();
 
-    const {fields, setFields, wfDef} = useFields(currentNode);
+    const {fields, setFields, wfDef, setData} = useFields(currentNode);
 
     const {assigns} = useAssign();
 
@@ -43,8 +43,15 @@ function DialogNode({isOpen, setIsOpen, currentNode}: DialogNodeProp) {
         const [fields] = changeFields;
         const [name] = fields.name;
 
-        // @ts-ignore
-        wfDef.current[name] = fields.value;
+
+        const outside = ['name', 'actions', 'time_process'];
+        if (!outside.includes(name)) {
+            // @ts-ignore
+            wfDef.current.wf_def_object[name] = fields.value;
+        } else {
+            // @ts-ignore
+            wfDef.current[name] = fields.value;
+        }
 
 
         setFields(allFields);
@@ -119,11 +126,12 @@ function DialogNode({isOpen, setIsOpen, currentNode}: DialogNodeProp) {
 
                     </Form.Item>
 
-                    {wfDef.current.assignTo === defineAssign.POSITION &&
+                    {wfDef.current.wf_def_object.assignTo === defineAssign.POSITION &&
                     <AssignPosition
                         form={form}
                         fields={fields}
                         wfDef={wfDef}
+                        setData={setData}
                     />
                     }
 

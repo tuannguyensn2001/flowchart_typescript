@@ -8,8 +8,6 @@ import {Edge} from "../../../entities/Node";
 import {Elements, typeElements} from "../../../entities/Elements";
 
 
-
-
 export default function useElements(id: string): typeElements {
     const [elements, setElements] = useState<Elements>([]);
 

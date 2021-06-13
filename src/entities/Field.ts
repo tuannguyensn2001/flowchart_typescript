@@ -1,5 +1,5 @@
-export declare  interface FieldData {
-    name: string | number | (string | number)[];
+export declare interface FieldData {
+    name: string[];
     value?: any;
     touched?: boolean;
     validating?: boolean;

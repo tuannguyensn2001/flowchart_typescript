@@ -1,4 +1,5 @@
 import {defineAssign} from "../defines/defineAssign";
+import {OptionTeam} from "../defines/defineAssign";
 
 export interface Location {
     x: number,
@@ -37,7 +38,10 @@ export declare interface WfDefDetailData {
     name: string | null,
     actions: string [] | [],
     time_process: string | null,
-    assignTo: string | defineAssign | null;
-    position_id: string | null,
-    department_group_id: string | null,
+    wf_def_object: {
+        assignTo: string | defineAssign | null;
+        position_id: string | null,
+        department_group_id: string | null,
+        option_team: OptionTeam | null
+    }
 }

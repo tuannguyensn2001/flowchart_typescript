@@ -1,3 +1,4 @@
+import {symlink} from "fs";
 import {useState, useRef, useEffect, MutableRefObject} from "react";
 import {Node} from "react-flow-renderer";
 import {NodeItem} from "../../../entities/Node";
@@ -6,10 +7,13 @@ import TimeHelper from "../../../utils/helper/time";
 import {FieldData} from "../../../entities/Field";
 import {WfDefDetailData} from "../../../entities/WfDefDetail";
 
+
 interface typeUseFields {
     fields: FieldData[],
     setFields: setState<FieldData[]>,
-    wfDef: MutableRefObject<WfDefDetailData>
+    wfDef: MutableRefObject<WfDefDetailData>,
+
+    setData<Type>(name: string, value: Type): void
 }
 
 export default function useFields(currentNode: Node<NodeItem> | null): typeUseFields {
@@ -19,9 +23,12 @@ export default function useFields(currentNode: Node<NodeItem> | null): typeUseFi
         name: null,
         actions: [],
         time_process: null,
-        assignTo: null,
-        position_id: null,
-        department_group_id: null
+        wf_def_object: {
+            assignTo: null,
+            position_id: null,
+            department_group_id: null,
+            option_team: null,
+        }
     });
 
     useEffect(() => {
@@ -31,9 +38,9 @@ export default function useFields(currentNode: Node<NodeItem> | null): typeUseFi
         wfDef.current.name = currentNode?.data?.def?.name || null;
         wfDef.current.actions = currentNode?.data?.def?.actions.split('|') || [];
         wfDef.current.time_process = new TimeHelper(currentNode?.data?.def.time_process + '').toString();
-        wfDef.current.assignTo = currentNode?.data?.def.wf_def_object.assignTo || null;
-        wfDef.current.position_id = currentNode.data?.def.wf_def_object.position + '' || null;
-        wfDef.current.department_group_id = currentNode.data?.def.wf_def_object.department + '' || null;
+        wfDef.current.wf_def_object.assignTo = currentNode?.data?.def.wf_def_object.assignTo || null;
+        wfDef.current.wf_def_object.position_id = !!(currentNode.data?.def.wf_def_object.position) ? String(currentNode.data?.def.wf_def_object.position) : null;
+        wfDef.current.wf_def_object.department_group_id = !!(currentNode.data?.def.wf_def_object.department) ? String(currentNode.data?.def.wf_def_object.department) : null;
 
         setFields([
             {
@@ -50,24 +57,40 @@ export default function useFields(currentNode: Node<NodeItem> | null): typeUseFi
             },
             {
                 name: ['assignTo'],
-                value: wfDef.current.assignTo
+                value: wfDef.current.wf_def_object.assignTo
             },
             {
                 name: ['position_id'],
-                value: wfDef.current.position_id
+                value: wfDef.current.wf_def_object.position_id
             },
             {
                 name: ['department_group_id'],
-                value: wfDef.current.department_group_id
+                value: wfDef.current.wf_def_object.department_group_id
+            },
+            {
+                name: ['option_team'],
+                value: wfDef.current.wf_def_object.option_team
             }
         ]);
 
 
     }, [currentNode]);
 
+    const setData = <Type>(name: string, value: Type) => {
+        const clone = [...fields];
+
+        const index = clone.findIndex(item => item.name.includes(name));
+
+        clone[index].value = value;
+
+        setFields(clone);
+
+    }
+
     return {
         fields,
         wfDef,
-        setFields
+        setFields,
+        setData
     }
 }

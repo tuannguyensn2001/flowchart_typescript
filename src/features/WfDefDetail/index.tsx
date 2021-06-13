@@ -1,3 +1,4 @@
+import {Spin} from "antd";
 import React, {useState} from 'react';
 import useLocale from "../../hooks/useLocale";
 import ReactFlow, {ReactFlowProvider} from "react-flow-renderer";
@@ -21,7 +22,7 @@ function WfDefDetail() {
 
     const {id}: { id: string } = useParams();
 
-    const {elements, setElements} = useElements(id);
+    const {elements, setElements, isLoading, isSuccess} = useElements(id);
 
     const {
         handleDoubleClick,
@@ -31,29 +32,33 @@ function WfDefDetail() {
 
 
     return (
-        <div
-        >
+        <div>
 
-            <DialogNode
-                currentNode={currentNode}
-                isOpen={isOpenNode}
-                setIsOpen={setIsOpenNode}
-            />
 
-            <div>
+            {isSuccess &&
+            <React.Fragment>
+                <DialogNode
+                    currentNode={currentNode}
+                    isOpen={isOpenNode}
+                    setIsOpen={setIsOpenNode}
+                />
 
-            </div>
+                <div>
 
-            <ReactFlowWrapper>
-                <ReactFlowProvider>
-                    <ReactFlow
-                        elements={elements}
-                        onNodeDoubleClick={handleDoubleClick}
-                        onConnect={onConnect}
-                    >
-                    </ReactFlow>
-                </ReactFlowProvider>
-            </ReactFlowWrapper>
+                </div>
+
+                <ReactFlowWrapper>
+                    <ReactFlowProvider>
+                        <ReactFlow
+                            elements={elements}
+                            onNodeDoubleClick={handleDoubleClick}
+                            onConnect={onConnect}
+                        >
+                        </ReactFlow>
+                    </ReactFlowProvider>
+                </ReactFlowWrapper>
+            </React.Fragment>
+            }
 
 
         </div>

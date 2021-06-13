@@ -5,3 +5,8 @@ export enum defineAssign {
     JOB = 'JOB',
     JOB_DETAIL = 'JOB_DETAIL'
 }
+
+export enum OptionTeam {
+    TEAM = 'TEAM',
+    OTHER = 'OTHER'
+}
