@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import useLocale from "../../hooks/useLocale";
 import ReactFlow, {ReactFlowProvider} from "react-flow-renderer";
+import TimeHelper from "../../utils/helper/time";
 import style from "./styled";
 import {useParams} from 'react-router-dom';
 import useElements from "./hooks/useElements";
@@ -20,9 +21,13 @@ function WfDefDetail() {
 
     const {id}: { id: string } = useParams();
 
-    const {elements} = useElements(id);
+    const {elements, setElements} = useElements(id);
 
-    const {handleDoubleClick, currentNode} = useEvent(elements, setIsOpenNode);
+    const {
+        handleDoubleClick,
+        currentNode,
+        onConnect
+    } = useEvent(elements, setIsOpenNode, setElements);
 
 
     return (
@@ -43,8 +48,8 @@ function WfDefDetail() {
                 <ReactFlowProvider>
                     <ReactFlow
                         elements={elements}
-                        onDoubleClick={handleDoubleClick}
-
+                        onNodeDoubleClick={handleDoubleClick}
+                        onConnect={onConnect}
                     >
                     </ReactFlow>
                 </ReactFlowProvider>

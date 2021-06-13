@@ -1,36 +1,46 @@
-import {Elements, ElementsItem} from "../../../entities/Elements";
-import {isNode, Node} from "react-flow-renderer";
 import {useState} from "react";
+import {Node, Edge, Connection, ArrowHeadType, addEdge} from "react-flow-renderer";
+import {Elements} from "../../../entities/Elements";
 import {NodeItem} from "../../../entities/Node";
 import {setState} from "../../../entities/SetState";
 
 interface typeEvent {
-    handleDoubleClick(event: any): void,
+    handleDoubleClick(event: any, element: Node): void,
 
     currentNode: Node<NodeItem> | null,
+
+    onConnect(connection: Edge | Connection): void,
 }
 
 
-export default function useEvent(elements: Elements, setIsOpenNode: setState<boolean>): typeEvent {
+export default function useEvent(
+    elements: Elements,
+    setIsOpenNode: setState<boolean>,
+    setElements: setState<Elements>
+): typeEvent {
 
     const [currentNode, setCurrentNode] = useState<Node<NodeItem> | null>(null);
 
-    const handleDoubleClick = (event: any): void => {
-        const {id} = event?.target?.dataset;
+    const handleDoubleClick = (event: any, element: Node): void => {
+        setCurrentNode(element);
+        setIsOpenNode(true);
+    }
 
-        const node: ElementsItem | undefined = elements.find((item: ElementsItem): boolean => item.id === id);
+    const onConnect = (connection: any): void => {
+        const {source, target}: { source: string | null, target: string | null } = connection
 
-        if (!node) return;
+        setElements(prevState => {
+            connection.arrowHeadType = ArrowHeadType.Arrow;
+            connection.type = 'step';
 
+            return addEdge(connection, elements);
+        })
 
-        if (isNode(node)) {
-            setCurrentNode(node);
-            setIsOpenNode(true);
-        }
     }
 
     return {
         handleDoubleClick,
-        currentNode
+        currentNode,
+        onConnect,
     }
 }

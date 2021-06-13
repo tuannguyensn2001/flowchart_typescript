@@ -1,19 +1,21 @@
+import {defineAssign} from "../defines/defineAssign";
+
 export interface Location {
     x: number,
     y: number
 }
 
-// export interface WfDefObject {
-//     assignTo: string,
-//     position: number,
-//     department: number,
-//     isAssign: any,
-//     user_id: number,
-//     team_id: number,
-//     is_lead_team: boolean,
-//     is_unique_dept: any,
-//     step_id: number
-// }
+export interface WfDefObject {
+    assignTo: defineAssign,
+    position: number,
+    department: number,
+    isAssign: any,
+    user_id: number,
+    team_id: number,
+    is_lead_team: boolean,
+    is_unique_dept: any,
+    step_id: number
+}
 
 export interface WfDefDetail {
     id: number,
@@ -28,4 +30,14 @@ export interface WfDefDetail {
     actionBy: string | null,
     created_at: string | null,
     updated_at: string | null,
+    wf_def_object: WfDefObject
+}
+
+export declare interface WfDefDetailData {
+    name: string | null,
+    actions: string [] | [],
+    time_process: string | null,
+    assignTo: string | defineAssign | null;
+    position_id: string | null,
+    department_group_id: string | null,
 }

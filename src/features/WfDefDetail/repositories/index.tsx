@@ -54,11 +54,11 @@ export const convertFromWfDefDetailToElement = (data: WfDefDetail[]): Node[] => 
 export const convertFromWfDefConditionToConnection = (data: WfDefCondition[]): Edge[] => {
     return data.map((item): Edge => {
         return {
-            id: item.id + '',
+            id: `${item.wf_def_detail_parent_id}-${item.wf_def_detail_id}`,
             source: item.wf_def_detail_parent_id + '',
             target: item.wf_def_detail_id + '',
             arrowHeadType: ArrowHeadType.Arrow,
-            isThread: item.connection,
+            isThread: item.connection || false,
             data: item,
             type: 'step'
         }
