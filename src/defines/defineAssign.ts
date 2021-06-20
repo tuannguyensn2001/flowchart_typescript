@@ -10,3 +10,9 @@ export enum OptionTeam {
     TEAM = 'TEAM',
     OTHER = 'OTHER'
 }
+
+export enum OptionForTeam {
+    LEADER = 'LEADER',
+    USER = 'USER',
+    ALL = 'ALL'
+}

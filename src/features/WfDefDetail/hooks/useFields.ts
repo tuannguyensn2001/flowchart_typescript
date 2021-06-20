@@ -9,17 +9,16 @@ import {WfDefDetailData} from "../../../entities/WfDefDetail";
 
 
 interface typeUseFields {
-    fields: FieldData[],
-    setFields: setState<FieldData[]>,
-    wfDef: MutableRefObject<WfDefDetailData>,
+    wfDef: WfDefDetailData,
+    setWfDef: setState<WfDefDetailData>
 
-    setData<Type>(name: string, value: Type): void
 }
+
 
 export default function useFields(currentNode: Node<NodeItem> | null): typeUseFields {
     const [fields, setFields] = useState<FieldData[]>([]);
 
-    const wfDef = useRef<WfDefDetailData>({
+    const [wfDef, setWfDef] = useState<WfDefDetailData>({
         name: null,
         actions: [],
         time_process: null,
@@ -28,6 +27,9 @@ export default function useFields(currentNode: Node<NodeItem> | null): typeUseFi
             position_id: null,
             department_group_id: null,
             option_team: null,
+            team_id: null,
+            option_for_team: null,
+            user_id: null
         }
     });
 
@@ -35,62 +37,24 @@ export default function useFields(currentNode: Node<NodeItem> | null): typeUseFi
 
         if (currentNode === null) return;
 
-        wfDef.current.name = currentNode?.data?.def?.name || null;
-        wfDef.current.actions = currentNode?.data?.def?.actions.split('|') || [];
-        wfDef.current.time_process = new TimeHelper(currentNode?.data?.def.time_process + '').toString();
-        wfDef.current.wf_def_object.assignTo = currentNode?.data?.def.wf_def_object.assignTo || null;
-        wfDef.current.wf_def_object.position_id = !!(currentNode.data?.def.wf_def_object.position) ? String(currentNode.data?.def.wf_def_object.position) : null;
-        wfDef.current.wf_def_object.department_group_id = !!(currentNode.data?.def.wf_def_object.department) ? String(currentNode.data?.def.wf_def_object.department) : null;
+        const clone = {...wfDef};
 
-        setFields([
-            {
-                name: ['name'],
-                value: wfDef.current.name
-            },
-            {
-                name: ['actions'],
-                value: wfDef.current.actions
-            },
-            {
-                name: ['time_process'],
-                value: wfDef.current.time_process
-            },
-            {
-                name: ['assignTo'],
-                value: wfDef.current.wf_def_object.assignTo
-            },
-            {
-                name: ['position_id'],
-                value: wfDef.current.wf_def_object.position_id
-            },
-            {
-                name: ['department_group_id'],
-                value: wfDef.current.wf_def_object.department_group_id
-            },
-            {
-                name: ['option_team'],
-                value: wfDef.current.wf_def_object.option_team
-            }
-        ]);
+        clone.name = currentNode?.data?.def?.name || null;
+        clone.actions = currentNode?.data?.def?.actions.split('|') || [];
+        clone.time_process = new TimeHelper(currentNode?.data?.def.time_process + '').toString();
+        clone.wf_def_object.assignTo = currentNode?.data?.def.wf_def_object.assignTo || null;
+        clone.wf_def_object.position_id = !!(currentNode.data?.def.wf_def_object.position) ? String(currentNode.data?.def.wf_def_object.position) : null;
+        clone.wf_def_object.department_group_id = !!(currentNode.data?.def.wf_def_object.department) ? String(currentNode.data?.def.wf_def_object.department) : null;
+        clone.wf_def_object.team_id = !!(currentNode.data?.def.wf_def_object.team_id) ? String(currentNode.data.def.wf_def_object.team_id) : null;
+        clone.wf_def_object.user_id = !!(currentNode.data?.def.wf_def_object.user_id) ? String(currentNode.data.def.wf_def_object.user_id) : null;
 
+        setWfDef(clone);
 
     }, [currentNode]);
 
-    const setData = <Type>(name: string, value: Type) => {
-        const clone = [...fields];
-
-        const index = clone.findIndex(item => item.name.includes(name));
-
-        clone[index].value = value;
-
-        setFields(clone);
-
-    }
 
     return {
-        fields,
         wfDef,
-        setFields,
-        setData
+        setWfDef
     }
 }
