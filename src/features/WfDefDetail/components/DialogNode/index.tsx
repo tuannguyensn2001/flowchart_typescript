@@ -1,19 +1,18 @@
-import {Modal, Form, Input, Select, FormInstance} from "antd";
-import React, {useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Node} from "react-flow-renderer";
-import {defineAssign} from "../../../../defines/defineAssign";
 import {NodeItem} from "../../../../entities/Node";
 import {setState} from "../../../../entities/SetState";
 import useLocale from "../../../../hooks/useLocale";
-import useAction from "../../hooks/useAction";
-import useAssign from "../../hooks/useAssign";
-import useFields from "../../hooks/useFields";
-import AssignPosition from "../AssignPosition";
-import {Tabs} from "antd";
+import {useForm} from "react-hook-form";
 import TabDef from "../TabDef";
+import {Button, Form, Modal} from "react-bootstrap";
+import {Tabs, Tab} from "react-bootstrap";
+import {defineSelect} from "../../../../defines/select";
+import TimeHelper from "../../../../utils/helper/time";
 import TabAssign from "../TabAssign";
+import useAssign from "../../hooks/useAssign";
+import {WfDefDetailProvider} from "../../context";
 
-const {TabPane} = Tabs;
 
 interface DialogNodeProp {
     isOpen: boolean,
@@ -22,62 +21,102 @@ interface DialogNodeProp {
 }
 
 
-interface WfDef {
-    name?: string | null | any,
-    actions?: string[] | [],
-    time_process?: string | null,
-    assignTo?: string | null
+export interface formDefData {
+    def: {
+        name: string,
+        actions: defineSelect[],
+        time_process: string,
+    },
+    assign: {
+        assignTo: defineSelect,
+        position_id: defineSelect,
+        department_id: defineSelect,
+        team_or_department: string,
+    }
 }
 
-const {Option} = Select;
 
 function DialogNode({isOpen, setIsOpen, currentNode}: DialogNodeProp) {
 
-    const [form]: [form: FormInstance] = Form.useForm();
     const {trans} = useLocale();
 
-    const {wfDef, setWfDef} = useFields(currentNode);
+    const form = useRef<HTMLFormElement>(null);
 
+    const {assigns} = useAssign();
+
+    const {control, handleSubmit, setValue, watch} = useForm<formDefData>();
+
+
+    useEffect(() => {
+        setValue('def.name', currentNode?.data?.def.name || '');
+        setValue('def.actions', currentNode?.data?.def?.actions?.split('|')?.map(item => {
+            return {
+                value: item,
+                label: item
+            }
+        }) || []);
+
+        if (!!currentNode?.data?.def?.time_process) {
+            const timeHelper = new TimeHelper(currentNode?.data?.def?.time_process.toString());
+            setValue('def.time_process', timeHelper.toString());
+        } else setValue('def.time_process', '');
+
+        if (!!currentNode?.data?.def?.wf_def_object.assignTo) {
+            const assign = currentNode?.data?.def?.wf_def_object.assignTo;
+
+            const value = assigns.find(item => item.value === assign);
+
+            if (!!value) setValue('assign.assignTo', value);
+        }
+
+    }, [currentNode])
+
+
+    const handleOnSubmit = (data: formDefData) => {
+        console.log(data);
+    }
+
+    const handleClose = () => {
+        setIsOpen(false);
+    }
 
     return (
-        <Modal
-            maskClosable={false}
-            okText={trans('action.save')}
-            cancelText={trans('action.cancel')}
-            // width={500}
-            title={trans('wf_def_detail.edit')}
-            onCancel={() => setIsOpen(false)}
-            visible={isOpen}>
 
-            <div>
+        <Modal size={'lg'} show={isOpen} onHide={handleClose}>
+            <Form onSubmit={handleSubmit(handleOnSubmit)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{trans('wf_def_detail.edit')}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
 
-                <Tabs defaultActiveKey={'2'}>
-                    <TabPane
-                        tab={"Quy trình"}
-                        key={'1'}
-                    >
+                    <WfDefDetailProvider
+                        value={{
+                            control: control,
+                            watch: watch
+                        }}>
+                        <Tabs defaultActiveKey="def" id="uncontrolled-tab-example" className="mb-3">
+                            <Tab eventKey="def" title="Quy trình">
+                                <TabDef
+                                />
+                            </Tab>
+                            <Tab eventKey="assign" title="Bàn giao">
+                                <TabAssign/>
+                            </Tab>
+                        </Tabs>
+                    </WfDefDetailProvider>
 
-                        <TabDef
-                            wfDef={wfDef}
-                            setWfDef={setWfDef}
-                        />
-
-
-                    </TabPane>
-
-                    <TabPane
-                        key={'2'}
-                        tab={'Bàn giao'}
-                    >
-                        <TabAssign
-                            wfDef={wfDef}
-                            setWfDef={setWfDef}
-                        />
-                    </TabPane>
-                </Tabs>
-
-            </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className={'light'} onClick={handleClose} variant={'danger'}>
+                        {trans('action.cancel')}
+                    </Button>
+                    <Button type={'submit'}>
+                        {trans('action.save')}
+                    </Button>
+                </Modal.Footer>
+            </Form>
         </Modal>
+
     )
 }
 

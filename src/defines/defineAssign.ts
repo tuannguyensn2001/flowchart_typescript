@@ -8,7 +8,9 @@ export enum defineAssign {
 
 export enum OptionTeam {
     TEAM = 'TEAM',
-    OTHER = 'OTHER'
+    OTHER = 'OTHER',
+    ALL = 'ALL',
+    USER = 'USER'
 }
 
 export enum OptionForTeam {

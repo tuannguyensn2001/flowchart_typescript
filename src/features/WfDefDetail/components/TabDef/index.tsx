@@ -1,89 +1,95 @@
-import {Form, Input, Select} from "antd";
-import React, {ChangeEvent, SyntheticEvent} from "react";
-import useLocale from "../../../../hooks/useLocale";
-import styled from "styled-components";
+import {Controller} from "react-hook-form";
 import useAction from "../../hooks/useAction";
-import {setState} from "../../../../entities/SetState";
-import {WfDefDetailData} from "../../../../entities/WfDefDetail";
+import {Form} from "react-bootstrap";
+import Select, {ValueType} from 'react-select';
+import {defineSelect} from "../../../../defines/select";
+import {useContext} from "react";
+import WfDefDetailContext from "../../context";
 
 interface TabDefProp {
-    wfDef: WfDefDetailData
-    setWfDef: setState<WfDefDetailData>
+
 }
 
-export const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-`
 
+function TabDef() {
 
-function TabDef({wfDef, setWfDef}: TabDefProp) {
+    const {actions} = useAction();
 
-    const {trans} = useLocale();
-
-    const {actions: listActions} = useAction();
-
-    const handleOnChange = (name: string, value: string | string[] | null) => {
-        const wfDefClone = {...wfDef};
-
-        switch (name) {
-            case 'name' :
-                if (!Array.isArray(value)) wfDefClone.name = value;
-                break;
-
-            case 'actions':
-                if (Array.isArray(value)) wfDefClone.actions = value;
-                break;
-
-            case 'time_process':
-                if (!Array.isArray(value)) wfDefClone.time_process = value;
-                break;
-        }
-
-        setWfDef(wfDefClone);
-    }
-
+    const {control} = useContext(WfDefDetailContext);
 
     return (
-        <div>
-
-            <FormGroup>
-                <label htmlFor="name">Tên quy trình</label>
-                <Input
-                    onChange={event => handleOnChange('name', event.target.value)}
-                    value={wfDef.name ?? ''}
-                    id={'name'}
+        <>
+            {!!control &&
+            <div>
+                <Controller
+                    name="def.name"
+                    control={control}
+                    render={({field}) =>
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                            <Form.Label>Tên</Form.Label>
+                            <Form.Control className={'input-default'} {...field} type="text" placeholder="Nhập tên"/>
+                        </Form.Group>
+                    }
                 />
-            </FormGroup>
+
+                <Controller
+                    name='def.actions'
+                    control={control}
+                    render={({field}) => {
+                        return <Form.Group className="mb-3" controlId="actions">
+                            <Form.Label>Hành động</Form.Label>
+                            <Select
+                                {...field}
+                                isSearchable={true}
+                                placeholder={'Chọn hành động'}
+                                isMulti
+                                options={actions}/>
+                        </Form.Group>
+                    }
+                    }
+
+                />
+
+                <Controller
+                    name='def.time_process'
+                    control={control}
+                    render={({field}) => (
+
+                        <Form.Group className="mb-3" controlId="time_process">
+                            <Form.Label>Thời gian thực hiện</Form.Label>
+                            <Form.Control  {...field} type="text" placeholder="Thời gian"/>
+                        </Form.Group>
+                    )
+                    }
+                />
+
+                {/*<Controller*/
+                }
+                {/*    name="time_process"*/
+                }
+                {/*    control={control}*/
+                }
+                {/*    render={({field}) =>*/
+                }
+                {/*        <Form.Item*/
+                }
+                {/*            label={'Thời gian thực hiện'}*/
+                }
+                {/*        >*/
+                }
+                {/*            <Input {...field}/>*/
+                }
+                {/*        </Form.Item>*/
+                }
+                {/*    }*/
+                }
+                {/*/>*/
+                }
 
 
-            <FormGroup>
-                <label htmlFor="actions">Hành động</label>
-                <Select
-                    onChange={value => handleOnChange('actions', value)}
-                    value={wfDef.actions}
-                    id={'actions'}
-                    placeholder={trans('wf_def_detail.choose_actions')}
-                    showSearch
-                    mode={'multiple'}
-                >
-                    {listActions.map((action: string) => (
-                        <Select.Option value={action} key={action}>{action}</Select.Option>
-                    ))}
-                </Select>
-            </FormGroup>
-
-
-            <FormGroup>
-                <label htmlFor="time_process">Thời gian</label>
-                <Input
-                    onChange={event => handleOnChange('time_process', event.target.value)}
-                    id={'time_process'}
-                    value={wfDef.time_process ?? ''}/>
-            </FormGroup>
-
-
-        </div>
+            </div>
+            }
+        </>
     )
 }
 

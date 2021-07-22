@@ -10,6 +10,8 @@ interface typeEvent {
     currentNode: Node<NodeItem> | null,
 
     onConnect(connection: Edge | Connection): void,
+
+    addNode(): void
 }
 
 
@@ -38,9 +40,15 @@ export default function useEvent(
 
     }
 
+    const addNode = () => {
+        setCurrentNode(null);
+        setIsOpenNode(true);
+    }
+
     return {
         handleDoubleClick,
         currentNode,
         onConnect,
+        addNode
     }
 }

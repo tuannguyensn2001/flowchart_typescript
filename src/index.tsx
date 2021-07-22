@@ -4,6 +4,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './i18n/config';
 import {QueryClient, QueryClientProvider} from "react-query";
+// import 'antd/dist/antd.css';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style.css';
 
 const queryClient = new QueryClient();
 

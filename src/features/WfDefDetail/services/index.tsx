@@ -9,6 +9,10 @@ export const fetchPosition = (): Promise<any> => {
     return bookingAPI.get('/positions');
 }
 
+export const fetchDepartmentsUser = (id: number) => {
+    return bookingAPI.get(`/departments/${id}?user=true`);
+}
+
 export const fetchDepartments = (id: number) => {
     return bookingAPI.get(`/departments`);
 }

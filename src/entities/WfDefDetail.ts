@@ -44,7 +44,7 @@ export declare interface WfDefDetailData {
         department_group_id: string | null,
         option_team: string | OptionTeam | null,
         team_id: string | null,
-        option_for_team: OptionForTeam | null,
+        option_for_team: OptionForTeam | null | string,
         user_id: string | null
     }
 }

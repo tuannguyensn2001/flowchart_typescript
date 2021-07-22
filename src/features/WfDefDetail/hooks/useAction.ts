@@ -1,18 +1,23 @@
 import {useState} from "react";
+import {defineSelect} from "../../../defines/select";
 
-interface typeAction {
-    actions: string[]
-}
 
-export default function useAction(): typeAction {
-    const [actions] = useState([
+export default function useAction() {
+    const [actions] = useState<defineSelect[]>([
         'APPROVE',
         'APPROVE_AUTO',
         'COMPLETE',
         'EXEC',
         'REJECT',
         'START'
-    ]);
+    ].map(item => {
+        return {
+            value: item,
+            label: item,
+            // isDisabled: true
+        }
+    }))
+
 
     return {actions};
 }

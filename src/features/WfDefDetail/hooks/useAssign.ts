@@ -1,4 +1,5 @@
 import {defineAssign} from "../../../defines/defineAssign";
+import {defineSelect} from "../../../defines/select";
 
 interface Assign {
     value: defineAssign,
@@ -6,30 +7,30 @@ interface Assign {
 }
 
 interface typeAssign {
-    assigns: Assign[]
+    assigns: defineSelect[]
 }
 
 export default function useAssign(): typeAssign {
-    const assigns = [
+    const assigns: defineSelect[] = [
         {
             value: defineAssign.POSITION,
-            text: 'Dựa vào chức vụ'
+            label: 'Dựa vào chức vụ'
         },
         {
             value: defineAssign.USER,
-            text: 'Xác định nhân viên cụ thể'
+            label: 'Xác định nhân viên cụ thể'
         },
         {
             value: defineAssign.STEP,
-            text: 'Người làm tại 1 bước'
+            label: 'Người làm tại 1 bước'
         },
         {
             value: defineAssign.JOB,
-            text: 'Người tạo ra job'
+            label: 'Người tạo ra job'
         },
         {
             value: defineAssign.JOB_DETAIL,
-            text: 'Người tạo ra job detail'
+            label: 'Người tạo ra job detail'
         }
     ];
 
