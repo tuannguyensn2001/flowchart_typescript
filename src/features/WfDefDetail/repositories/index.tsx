@@ -13,7 +13,7 @@ interface Flow {
 
 export const getElements = async (id: string): Promise<Flow> => {
     const response: AxiosResponse = await fetchElements(id);
-    const node = response.data.node.map((item: any): WfDefDetail => {
+    const node = response.data.node.map((item: any): WfDefDetail[] => {
         return {
             ...item,
             location: JSON.parse(item.location),

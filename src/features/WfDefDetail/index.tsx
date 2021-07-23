@@ -26,7 +26,9 @@ function WfDefDetail() {
         handleDoubleClick,
         currentNode,
         onConnect,
-        addNode
+        addNode,
+        updateCurrentNode,
+        save
     } = useEvent(elements, setIsOpenNode, setElements);
 
 
@@ -35,9 +37,12 @@ function WfDefDetail() {
 
             <Button onClick={addNode}>Thêm mới</Button>
 
+            <Button onClick={save}>Lưu</Button>
+
             {isSuccess &&
             <React.Fragment>
                 <DialogNode
+                    updateCurrentNode={updateCurrentNode}
                     currentNode={currentNode}
                     isOpen={isOpenNode}
                     setIsOpen={setIsOpenNode}

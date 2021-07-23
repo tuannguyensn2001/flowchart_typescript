@@ -31,7 +31,13 @@ export interface WfDefDetail {
     actionBy: string | null,
     created_at: string | null,
     updated_at: string | null,
-    wf_def_object: WfDefObject
+    wf_def_object: WfDefObject,
+    attributes: {
+        name: string,
+        attribute_id: string,
+        wf_def_detail_id: string,
+        id: string
+    }
 }
 
 export declare interface WfDefDetailData {
