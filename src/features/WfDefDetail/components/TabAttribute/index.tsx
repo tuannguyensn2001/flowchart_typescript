@@ -3,21 +3,18 @@ import {Attribute} from "../../../../entities/Attribute";
 import {getAttributes} from "../../repositories/attributes";
 import {useContext, useMemo} from "react";
 import WfDefDetailContext from "../../context";
-import {useFieldArray} from "react-hook-form";
-import {Fragment} from "react";
-import {Controller} from "react-hook-form";
-import Select from 'react-select'
+import {Controller, useFieldArray} from "react-hook-form";
 import {defineSelect} from "../../../../defines/select";
-import {Button, Form} from "react-bootstrap";
+
 import styled from "styled-components";
-import {ImPlus} from "react-icons/all";
-import {ImMinus} from "react-icons/all";
+import {Button, Input, Select} from "antd";
 
 
 const AttributeItem = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
+  margin-top: 20px;
 
   .select {
     width: 50%;
@@ -85,78 +82,62 @@ function TabAttribute() {
 
     return (
         <div>
-            <div>
-                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                    <Button size='sm'
-                            className={'btn-flat'}
-                            onClick={handleAddFields}
-                    >
-                        <ImPlus/>
+            <Button
+                type={'primary'}
+                onClick={handleAddFields}
+            >
+                Thêm mới
+            </Button>
+            {fields.map((item, index) => (
+                <AttributeItem key={item.id}>
+                    <Controller
+                        name={`attributes.${index}.attribute_id`}
+                        //@ts-ignore
+                        control={control}
+                        render={({field}) => {
+                            return <Select showSearch
+                                           optionFilterProp="children"
+                                           value={field.value}
+                                           onChange={field.onChange}
+                                           className={'select'}>
+                                {attributesSelect.map(attribute => (
+                                    <Select.Option key={attribute.value}
+                                                   value={attribute.value}>{attribute.label}</Select.Option>
+                                ))}
+                            </Select>
+                        }}/>
+
+                    <Controller
+                        name={`attributes.${index}.name`}
+                        // @ts-ignore
+                        control={control}
+                        render={({field}) => {
+
+                            let defaultValue: string = '';
+                            let disabled: boolean = false;
+
+                            if (!!watchFields) {
+                                const attribute: Attribute | undefined = attributes?.find(attribute => attribute.id === Number(watchFields[index].attribute_id));
+
+                                defaultValue = !!attribute && !defaultValue ? attribute.default_name : '';
+
+                                // disabled = !!attribute ? !attribute.editable : false;
+                                disabled = !!defaultValue;
+                            }
+
+                            return <Input
+                                value={field.value}
+                                onChange={field.onChange}
+                                className={'input'} type="text"
+                                placeholder={'Nhập tên'}/>
+                        }}
+                    />
+
+                    <Button type={'primary'} onClick={() => handleRemoveField(index)}>
+                        Xóa
                     </Button>
-                </div>
-                {fields.map((item, index) => (
-                    <div style={{marginTop: '20px'}} key={item.id}>
-                        <AttributeItem>
-                            <Controller
-                                name={`attributes.${index}.attribute_id`}
-                                // @ts-ignore
-                                control={control}
-                                render={({field, fieldState, formState,}) => {
-
-                                    const value = attributesSelect.find(item => item.value === field.value);
-
-                                    const handleChange = (data: any) => {
-                                        field.onChange(data?.value);
-                                    };
-
-                                    return <Select
-                                        isSearchable={true}
-                                        className={'select'}
-                                        onChange={handleChange}
-                                        value={value}
-                                        placeholder={'Chọn thuộc tính'}
-                                        options={attributesSelect}/>
-
-                                }}
-                            />
-
-                            <Controller
-                                name={`attributes.${index}.name`}
-                                // @ts-ignore
-                                control={control}
-                                render={({field}) => {
-
-                                    let defaultValue: string = '';
-                                    let disabled: boolean = false;
-
-                                    if (!!watchFields) {
-                                        const attribute: Attribute | undefined = attributes?.find(attribute => attribute.id === Number(watchFields[index].attribute_id));
-
-                                        defaultValue = !!attribute ? attribute.default_name : '';
-
-                                        disabled = !!attribute ? !attribute.editable : false;
-
-                                    }
-
-                                    return <Form.Control
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        disabled={disabled}
-                                        defaultValue={defaultValue}
-                                        className={'input'} type="text"
-                                        placeholder={'Nhập tên'}/>
-                                }}
-                            />
-                            <Button onClick={() => handleRemoveField(index)}
-                                    className={'btn-flat'}
-                                    size={'sm'}><ImMinus/></Button>
-
-                        </AttributeItem>
-
-                    </div>
-                ))}
-
-            </div>
+                </AttributeItem>
+            ))}
         </div>
     )
 }

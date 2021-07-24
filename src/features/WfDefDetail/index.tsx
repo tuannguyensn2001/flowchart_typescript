@@ -1,11 +1,18 @@
 import React, {useState} from 'react';
-import ReactFlow, {Background, BackgroundVariant, Controls, MiniMap, ReactFlowProvider} from "react-flow-renderer";
+import ReactFlow, {
+    Background,
+    BackgroundVariant,
+    Controls,
+    MiniMap,
+    ReactFlowProvider
+} from "react-flow-renderer";
 import style from "./styled";
 import {useParams} from 'react-router-dom';
 import useElements from "./hooks/useElements";
 import useEvent from "./hooks/useEvent";
 import DialogNode from "./components/DialogNode";
-import {Button} from "react-bootstrap";
+import {Button} from "antd";
+import DialogEdge from "./components/DialogEdge";
 
 const {
     ReactFlowWrapper
@@ -18,6 +25,8 @@ function WfDefDetail() {
 
     const [isOpenNode, setIsOpenNode] = useState<boolean>(false);
 
+    const [isOpenEdge, setIsOpenEdge] = useState<boolean>(false);
+
     const {id}: { id: string } = useParams();
 
     const {elements, setElements, isSuccess} = useElements(id);
@@ -28,10 +37,15 @@ function WfDefDetail() {
         onConnect,
         addNode,
         updateCurrentNode,
-        save
-    } = useEvent(elements, setIsOpenNode, setElements);
+        save,
+        handleDoubleClickElement,
+        handleOnElementClick,
+        currentEdge,
+        updateCurrentEdge
+    } = useEvent(elements, setIsOpenNode, setIsOpenEdge, setElements);
 
 
+    // @ts-ignore
     return (
         <div>
 
@@ -41,11 +55,20 @@ function WfDefDetail() {
 
             {isSuccess &&
             <React.Fragment>
+
                 <DialogNode
                     updateCurrentNode={updateCurrentNode}
                     currentNode={currentNode}
                     isOpen={isOpenNode}
                     setIsOpen={setIsOpenNode}
+                />
+
+                <DialogEdge
+                    updateCurrentEdge={updateCurrentEdge}
+                    elements={elements}
+                    currentEdge={currentEdge}
+                    isOpen={isOpenEdge}
+                    setIsOpen={setIsOpenEdge}
                 />
 
                 <div>
@@ -55,6 +78,9 @@ function WfDefDetail() {
                 <ReactFlowWrapper>
                     <ReactFlowProvider>
                         <ReactFlow
+                            //@ts-ignore
+                            onDoubleClick={handleDoubleClickElement}
+                            onElementClick={handleOnElementClick}
                             elements={elements}
                             onNodeDoubleClick={handleDoubleClick}
                             onConnect={onConnect}

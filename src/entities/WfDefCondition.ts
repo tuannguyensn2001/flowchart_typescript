@@ -14,4 +14,20 @@ export declare interface WfDefCondition {
     waiting_type: string | null,
     waiting_priority: string | null,
     connection?: boolean,
+    style: {
+        lineColor: string
+    },
+    checks: CheckCondition[],
+    condition: string
+}
+
+export interface CheckCondition {
+    alias: string,
+    compare_name: string,
+    compare_operator: string,
+    compare_value: string,
+    id: string,
+    note: string,
+    wf_def_condition_id: string,
+
 }

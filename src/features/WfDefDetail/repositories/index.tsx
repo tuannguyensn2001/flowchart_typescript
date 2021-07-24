@@ -4,7 +4,7 @@ import {AxiosResponse} from "axios";
 import {ArrowHeadType, Node} from "react-flow-renderer";
 import {WfDefCondition} from "../../../entities/WfDefCondition";
 import {Edge} from "../../../entities/Node";
-import {Flowchart} from "../../../defines/flowchart";
+
 
 interface Flow {
     node: WfDefDetail[],
@@ -46,7 +46,12 @@ export const convertFromWfDefDetailToElement = (data: WfDefDetail[]): Node[] => 
                 label: item.name,
                 def: item,
             },
-            position: item.location
+            position: item.location,
+            style: {
+                backgroundColor: item?.style?.backgroundColor || 'blue',
+                border: 'none',
+                color: item?.style?.color || '#fff'
+            }
         }
     })
 }
@@ -60,7 +65,10 @@ export const convertFromWfDefConditionToConnection = (data: WfDefCondition[]): E
             arrowHeadType: ArrowHeadType.Arrow,
             isThread: item.connection || false,
             data: item,
-            type: 'step'
+            type: 'step',
+            style: {
+                stroke: item?.style?.lineColor ?? '#b1b1b7'
+            }
         }
     })
 }

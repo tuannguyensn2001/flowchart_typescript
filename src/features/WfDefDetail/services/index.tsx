@@ -41,3 +41,7 @@ export const fetchSave = (id: string, data: saveProp) => {
         data
     });
 }
+
+export const fetchMappingAttribute = (wf_def_condition_id: string) => {
+    return bookingAPI.get(`/wf-def-conditions/${wf_def_condition_id}/mapping`);
+}

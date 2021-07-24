@@ -3,7 +3,7 @@ import {BrowserRouter, Switch, Route} from "react-router-dom";
 
 import {defineRoute} from "./defines/route";
 import WfDefDetail from "./features/WfDefDetail";
-
+import 'antd/dist/antd.css';
 
 function App() {
     return (

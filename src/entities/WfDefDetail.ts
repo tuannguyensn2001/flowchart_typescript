@@ -32,6 +32,10 @@ export interface WfDefDetail {
     created_at: string | null,
     updated_at: string | null,
     wf_def_object: WfDefObject,
+    style: {
+      backgroundColor: string,
+      color: string
+    },
     attributes: {
         name: string,
         attribute_id: string,

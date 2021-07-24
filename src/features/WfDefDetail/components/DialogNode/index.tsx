@@ -4,16 +4,16 @@ import {NodeItem} from "../../../../entities/Node";
 import {setState} from "../../../../entities/SetState";
 import useLocale from "../../../../hooks/useLocale";
 import {useForm} from "react-hook-form";
-import TabDef from "../TabDef";
-import {Button, Form, Modal} from "react-bootstrap";
-import {Tabs, Tab} from "react-bootstrap";
 import {defineSelect} from "../../../../defines/select";
-import TimeHelper from "../../../../utils/helper/time";
-import TabAssign from "../TabAssign";
 import useAssign from "../../hooks/useAssign";
 import {WfDefDetailProvider} from "../../context";
+import {Modal} from "antd";
+import {Tabs} from "antd";
 import TabAttribute from "../TabAttribute";
+import styled from "styled-components";
 
+
+const {TabPane} = Tabs;
 
 interface DialogNodeProp {
     isOpen: boolean,
@@ -45,6 +45,9 @@ export interface formDefData {
     attributes: AttributeItem[]
 }
 
+const CustomModal = styled(Modal)`
+  width: 800px !important;
+`
 
 function DialogNode({isOpen, setIsOpen, currentNode, updateCurrentNode}: DialogNodeProp) {
 
@@ -83,7 +86,7 @@ function DialogNode({isOpen, setIsOpen, currentNode, updateCurrentNode}: DialogN
         if (Array.isArray(currentNode?.data?.def.attributes))
             setValue('attributes', currentNode?.data?.def.attributes ?? []);
 
-    }, [currentNode])
+    }, [currentNode]);
 
 
     const handleOnSubmit = (data: formDefData) => {
@@ -96,44 +99,29 @@ function DialogNode({isOpen, setIsOpen, currentNode, updateCurrentNode}: DialogN
 
     return (
 
-        <Modal size={'lg'} show={isOpen} onHide={handleClose}>
-            <Form onSubmit={handleSubmit(handleOnSubmit)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{trans('wf_def_detail.edit')}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+        <CustomModal title="Quy trình" onOk={handleSubmit(handleOnSubmit)} onCancel={handleClose} visible={isOpen}>
+            <WfDefDetailProvider
+                value={{
+                    control: control,
+                    watch: watch,
+                    wfDefDetail: currentNode?.data?.def ?? null
+                }}>
 
-                    <WfDefDetailProvider
-                        value={{
-                            control: control,
-                            watch: watch,
-                            wfDefDetail: currentNode?.data?.def ?? null
-                        }}>
-                        <Tabs defaultActiveKey="attribute" id="uncontrolled-tab-example" className="mb-3">
-                            <Tab eventKey="def" title="Quy trình">
-                                <TabDef
-                                />
-                            </Tab>
-                            <Tab eventKey="assign" title="Bàn giao">
-                                <TabAssign/>
-                            </Tab>
-                            <Tab eventKey="attribute" title="Giá trị">
-                                <TabAttribute/>
-                            </Tab>
-                        </Tabs>
-                    </WfDefDetailProvider>
+                <Tabs defaultActiveKey="3">
+                    <TabPane tab="Tab 1" key="1">
+                        Content of Tab Pane 1
+                    </TabPane>
+                    <TabPane tab="Tab 2" key="2">
+                        Content of Tab Pane 2
+                    </TabPane>
+                    <TabPane tab="Dữ liệu" key="3">
+                        <TabAttribute/>
+                    </TabPane>
+                </Tabs>
 
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className={'light'} onClick={handleClose} variant={'danger'}>
-                        {trans('action.cancel')}
-                    </Button>
-                    <Button type={'submit'}>
-                        {trans('action.save')}
-                    </Button>
-                </Modal.Footer>
-            </Form>
-        </Modal>
+
+            </WfDefDetailProvider>
+        </CustomModal>
 
     )
 }
