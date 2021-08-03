@@ -3,11 +3,12 @@ import {Attribute} from "../../../../entities/Attribute";
 import {getAttributes} from "../../repositories/attributes";
 import {useContext, useMemo} from "react";
 import WfDefDetailContext from "../../context";
-import {Controller, useFieldArray} from "react-hook-form";
+import {useFieldArray} from "react-hook-form";
 import {defineSelect} from "../../../../defines/select";
 
 import styled from "styled-components";
-import {Button, Input, Select} from "antd";
+import {Button} from "antd";
+import FormItemAttribute from "../FormItemAttribute";
 
 
 const AttributeItem = styled.div`
@@ -45,9 +46,7 @@ function TabAttribute() {
     const attributesSelect: defineSelect[] = useMemo((): defineSelect[] => {
         if (!attributes) return [];
 
-
         const selected = watchFields ? watchFields.map(item => item.attribute_id) : []
-
 
         return attributes.map(item => {
             return {
@@ -89,54 +88,67 @@ function TabAttribute() {
                 Thêm mới
             </Button>
             {fields.map((item, index) => (
-                <AttributeItem key={item.id}>
-                    <Controller
-                        name={`attributes.${index}.attribute_id`}
-                        //@ts-ignore
-                        control={control}
-                        render={({field}) => {
-                            return <Select showSearch
-                                           optionFilterProp="children"
-                                           value={field.value}
-                                           onChange={field.onChange}
-                                           className={'select'}>
-                                {attributesSelect.map(attribute => (
-                                    <Select.Option key={attribute.value}
-                                                   value={attribute.value}>{attribute.label}</Select.Option>
-                                ))}
-                            </Select>
-                        }}/>
-
-                    <Controller
-                        name={`attributes.${index}.name`}
-                        // @ts-ignore
-                        control={control}
-                        render={({field}) => {
-
-                            let defaultValue: string = '';
-                            let disabled: boolean = false;
-
-                            if (!!watchFields) {
-                                const attribute: Attribute | undefined = attributes?.find(attribute => attribute.id === Number(watchFields[index].attribute_id));
-
-                                defaultValue = !!attribute && !defaultValue ? attribute.default_name : '';
-
-                                // disabled = !!attribute ? !attribute.editable : false;
-                                disabled = !!defaultValue;
-                            }
-
-                            return <Input
-                                value={field.value}
-                                onChange={field.onChange}
-                                className={'input'} type="text"
-                                placeholder={'Nhập tên'}/>
-                        }}
-                    />
-
-                    <Button type={'primary'} onClick={() => handleRemoveField(index)}>
-                        Xóa
-                    </Button>
-                </AttributeItem>
+                <FormItemAttribute
+                    attributes={attributes}
+                    key={item.id}
+                    item={item}
+                    index={index}
+                    attributesSelect={attributesSelect}
+                    handleRemoveField={handleRemoveField}/>
+                // <AttributeItem key={item.id}>
+                //     <Controller
+                //         name={`attributes.${index}.attribute_id`}
+                //         //@ts-ignore
+                //         control={control}
+                //         render={({field}) => {
+                //             return <Select showSearch
+                //                            optionFilterProp="children"
+                //                            value={field.value}
+                //                            onChange={field.onChange}
+                //                            className={'select'}>
+                //                 {attributesSelect.map(attribute => (
+                //                     <Select.Option key={attribute.value}
+                //                                    value={attribute.value}>{attribute.label}</Select.Option>
+                //                 ))}
+                //             </Select>
+                //         }}/>
+                //
+                //     <Controller
+                //         name={`attributes.${index}.name`}
+                //         // @ts-ignore
+                //         control={control}
+                //         render={({field}) => {
+                //
+                //             // let defaultValue: string = field.value;
+                //             // // let disabled: boolean = false;
+                //             // //
+                //             // if (!!watchFields) {
+                //             //     const attribute: Attribute | undefined = attributes?.find(attribute => attribute.id === Number(watchFields[index].attribute_id));
+                //             //
+                //             //
+                //             //     if (!defaultValue) {
+                //             //         defaultValue = attribute?.default_name ?? '';
+                //             //     }
+                //             //
+                //             //     // defaultValue = !!attribute && !defaultValue ? attribute.default_name : '';
+                //             //     //
+                //             //     // // disabled = !!attribute ? !attribute.editable : false;
+                //             //     // disabled = !!defaultValue;
+                //             // }
+                //             //
+                //
+                //             return <Input
+                //                 value={field.value}
+                //                 onChange={field.onChange}
+                //                 className={'input'} type="text"
+                //                 placeholder={'Nhập tên'}/>
+                //         }}
+                //     />
+                //
+                //     <Button type={'primary'} onClick={() => handleRemoveField(index)}>
+                //         Xóa
+                //     </Button>
+                // </AttributeItem>
             ))}
         </div>
     )

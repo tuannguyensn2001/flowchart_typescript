@@ -137,7 +137,7 @@ function DialogEdge({isOpen, setIsOpen, currentEdge, elements, updateCurrentEdge
                                             <Select
                                                 value={field.value}
                                                 onChange={field.onChange}
-                                                style={{width: '120px'}}>
+                                                style={{width: '150px'}}>
                                                 {mapping?.fields.map(item => (
                                                     <Select.Option value={item.key} key={item.key}>
                                                         {item.value}
@@ -164,6 +164,7 @@ function DialogEdge({isOpen, setIsOpen, currentEdge, elements, updateCurrentEdge
                                         )}
                                     />
 
+
                                     <Controller
                                         control={control}
                                         name={`checks.${index}.compare_value`}
@@ -175,22 +176,28 @@ function DialogEdge({isOpen, setIsOpen, currentEdge, elements, updateCurrentEdge
 
                                             if (mappingItem?.type === 'SELECT') {
                                                 return <Select
-                                                    value={Number(field.value)}
+                                                    value={field.value + ''}
                                                     onChange={field.onChange}
-                                                    style={{width: '100px'}}>
+                                                    style={{width: '200px'}}>
                                                     {mappingItem?.data.map(option => (
-                                                        <Select.Option value={Number(option.key)}
+                                                        <Select.Option value={option.key + ''}
                                                                        key={option.key}>{option.value}</Select.Option>
                                                     ))}
                                                 </Select>
                                             }
 
                                             if (mappingItem?.type === 'RADIO') {
+
+                                                const handleChange = (event: any) => {
+                                                    console.log('change');
+                                                    field.onChange(event.target.value);
+                                                }
+
                                                 return <Radio.Group
-                                                    value={Number(field.value)}
+                                                    value={field.value}
                                                     onChange={field.onChange}>
                                                     {mappingItem?.data.map(option => (
-                                                        <Radio value={Number(option.key)}
+                                                        <Radio value={option.key}
                                                                key={option.key}>{option.value}</Radio>
                                                     ))}
                                                 </Radio.Group>
@@ -206,6 +213,7 @@ function DialogEdge({isOpen, setIsOpen, currentEdge, elements, updateCurrentEdge
                                             return <Input value={field.value} onChange={field.onChange}/>
                                         }
                                         }/>
+
 
                                     <Controller
                                         control={control}

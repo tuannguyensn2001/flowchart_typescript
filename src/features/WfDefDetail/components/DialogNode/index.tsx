@@ -27,7 +27,8 @@ interface AttributeItem {
     id: string,
     name: string,
     wf_def_detail_id: string,
-    attribute_id: string
+    attribute_id: string,
+    isDisabled: boolean
 }
 
 export interface formDefData {
@@ -102,6 +103,7 @@ function DialogNode({isOpen, setIsOpen, currentNode, updateCurrentNode}: DialogN
         <CustomModal title="Quy trình" onOk={handleSubmit(handleOnSubmit)} onCancel={handleClose} visible={isOpen}>
             <WfDefDetailProvider
                 value={{
+                    setValue: setValue,
                     control: control,
                     watch: watch,
                     wfDefDetail: currentNode?.data?.def ?? null
